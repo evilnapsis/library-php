@@ -1,9 +1,9 @@
 <?php
-class UserData {
-	public static $tablename = "user";
+class AdminData {
+	public static $tablename = "admin";
 
 
-	public function Userdata(){
+	public function AdminData(){
 		$this->name = "";
 		$this->lastname = "";
 		$this->email = "";
@@ -29,7 +29,7 @@ class UserData {
 		Executor::doit($sql);
 	}
 
-// partiendo de que ya tenemos creado un objecto UserData previamente utilizamos el contexto
+// partiendo de que ya tenemos creado un objecto AdminData previamente utilizamos el contexto
 	public function update(){
 		$sql = "update ".self::$tablename." set name=\"$this->name\",username=\"$this->username\",email=\"$this->email\",kind_id=\"$this->kind_id\" where id=$this->id";
 		Executor::doit($sql);
@@ -49,27 +49,27 @@ class UserData {
 	public static function getById($id){
 		$sql = "select * from ".self::$tablename." where id=$id";
 		$query = Executor::doit($sql);
-		return Model::one($query[0],new UserData());
+		return Model::one($query[0],new AdminData());
 	}
 
 	public static function getLogin($email,$password){
 		$sql = "select * from ".self::$tablename." where (email=\"$email\" or username=\"$email\") and password=\"$password\"";
 		$query = Executor::doit($sql);
-		return Model::one($query[0],new UserData());
+		return Model::one($query[0],new AdminData());
 	}
 
 
 	public static function getAll(){
 		$sql = "select * from ".self::$tablename;
 		$query = Executor::doit($sql);
-		return Model::many($query[0],new UserData());
+		return Model::many($query[0],new AdminData());
 
 	}
 	
 	public static function getLike($q){
 		$sql = "select * from ".self::$tablename." where name like '%$q%'";
 		$query = Executor::doit($sql);
-		return Model::many($query[0],new UserData());
+		return Model::many($query[0],new AdminData());
 	}
 
 

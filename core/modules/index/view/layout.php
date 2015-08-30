@@ -43,7 +43,7 @@
 <?php 
 $u=null;
 if(Session::getUID()!=""):
-  $u = UserData::getById(Session::getUID());
+  $u = AdminData::getById(Session::getUID());
 ?>
          <ul class="nav navbar-nav">
           <li><a href="../"><i class="fa fa-globe"></i> Ver Blog</a></li>
@@ -73,7 +73,7 @@ if(Session::getUID()!=""):
 <?php 
 $u=null;
 if(Session::getUID()!=""){
-  $u = UserData::getById(Session::getUID());
+  $u = AdminData::getById(Session::getUID());
   $user = $u->name." ".$u->lastname;
 
   }?>
