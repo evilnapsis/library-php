@@ -1,17 +1,9 @@
 <?php
 
-$a = new SQLMan();
-//$a->in_test = true;
-$a->tablename = "editorial";
-$autores= $a->select();
+$autores= EditorialData::getAll();
 // print_r($autores);
 ?>
       <div class="page-content">
-
-        <!-- Header Bar -->
-<?php Action::load("header");?>
-        <!-- End Header Bar -->
-
           <div class="row">
             <div class="col-lg-12">
                   <a href="./index.php?view=nuevaeditorial" class="btn btn-default pull-right">Nueva Editorial</a>
@@ -31,10 +23,10 @@ $autores= $a->select();
                       <tbody>
                       <?php foreach($autores as $autor):?>
                         <tr>
-                        <td><?php echo $autor->fields["nombre"]; ?></td>
+                        <td><?php echo $autor->nombre; ?></td>
                         <td>
-                        <a href="./index.php?view=editeditorial&id=<?php echo $autor->fields["id"]; ?>" class="btn btn-warning btn-xs">Editar</a>
-                        <a href="./index.php?action=deleditorial&id=<?php echo $autor->fields["id"]; ?>" class="btn btn-danger btn-xs">Eliminar</a>
+                        <a href="./index.php?view=editeditorial&id=<?php echo $autor->id; ?>" class="btn btn-warning btn-xs">Editar</a>
+                        <a href="./index.php?action=deleditorial&id=<?php echo $autor->id; ?>" class="btn btn-danger btn-xs">Eliminar</a>
                         </td>
                         </tr>
                       <?php endforeach; ?>
