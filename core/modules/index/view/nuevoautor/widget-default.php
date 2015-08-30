@@ -1,10 +1,4 @@
       <div class="page-content">
-
-        <!-- Header Bar -->
-<?php Action::load("header");?>
-        <!-- End Header Bar -->
-
-
           <div class="row">
             <div class="col-lg-12">
             <h2>Nuevo autor</h2>

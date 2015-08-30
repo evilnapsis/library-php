@@ -1,15 +1,12 @@
 <?php
 
-$a = new SQLMan();
-$a->tablename = "autor";
-$autores= $a->select("one","");
+$autores= AutorData::getAll();
 
 // print_r($autores);
 ?>
       <div class="page-content">
 
         <!-- Header Bar -->
-<?php Action::load("header");?>
         <!-- End Header Bar -->
 
           <div class="row">
@@ -31,11 +28,11 @@ $autores= $a->select("one","");
                       <tbody>
                       <?php foreach($autores as $autor):?>
                         <tr>
-                        <td><?php echo $autor->fields["nombre"]; ?></td>
-                        <td><?php echo $autor->fields["apellido"]; ?></td>
+                        <td><?php echo $autor->nombre; ?></td>
+                        <td><?php echo $autor->apellido; ?></td>
                         <td>
-                        <a href="./index.php?view=editautor&id=<?php echo $autor->fields["id"]; ?>" class="btn btn-warning btn-xs">Editar</a>
-                        <a href="./index.php?action=delautor&id=<?php echo $autor->fields["id"]; ?>" class="btn btn-danger btn-xs">Eliminar</a>
+                        <a href="./index.php?view=editautor&id=<?php echo $autor->id; ?>" class="btn btn-warning btn-xs">Editar</a>
+                        <a href="./index.php?action=delautor&id=<?php echo $autor->id; ?>" class="btn btn-danger btn-xs">Eliminar</a>
                         </td>
                         </tr>
                       <?php endforeach; ?>

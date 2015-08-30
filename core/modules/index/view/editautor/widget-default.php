@@ -1,19 +1,9 @@
 <?php
 
-$a = new SQLMan();
-$a->tablename = "autor";
-//$a->in_test=true;
-$autor= $a->select("one","",$where="id=".$_GET["id"]);
-$autor = $autor[0];
+$autor = AutorData::getById($_GET["id"]);
 //print_r($autor);
 ?>
       <div class="page-content">
-
-        <!-- Header Bar -->
-<?php Action::load("header");?>
-        <!-- End Header Bar -->
-
-
           <div class="row">
             <div class="col-lg-12">
             <h2>Actualizar Autor</h2>
@@ -26,15 +16,15 @@ $autor = $autor[0];
   <div class="form-group">
     <label for="inputEmail1" class="col-lg-2 control-label">Nombre</label>
     <div class="col-lg-10">
-      <input type="text" name="nombre" value="<?php echo $autor->fields["nombre"]; ?>" required class="form-control" id="inputEmail1" placeholder="Nombre">
+      <input type="text" name="nombre" value="<?php echo $autor->nombre; ?>" required class="form-control" id="inputEmail1" placeholder="Nombre">
     </div>
   </div>
 
   <div class="form-group">
     <label for="inputEmail1" class="col-lg-2 control-label">Apellido</label>
     <div class="col-lg-10">
-      <input type="text" name="apellido" value="<?php echo $autor->fields["apellido"]; ?>" class="form-control" id="inputEmail1" required placeholder="Apellido">
-      <input type="hidden" name="id" value="<?php echo $autor->fields["id"]; ?>" >
+      <input type="text" name="apellido" value="<?php echo $autor->apellido; ?>" class="form-control" id="inputEmail1" required placeholder="Apellido">
+      <input type="hidden" name="id" value="<?php echo $autor->id; ?>" >
     </div>
   </div>
 
