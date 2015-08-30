@@ -12,6 +12,8 @@ create table admin (
 	created_at datetime not null
 );
 
+insert into admin (email,password,is_admin) value ("admin","admin",1);
+
 create table usuario (
 	id int not null auto_increment primary key,
 	nombre varchar(50) not null,
