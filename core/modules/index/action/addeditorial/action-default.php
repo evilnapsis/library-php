@@ -1,10 +1,14 @@
 <?php
-// print_r($_SESSION);
+
 if(count($_POST)>0){
-$a = new EditorialData();
-$a->nombre = $_POST["nombre"];
-$a->add();
-Core::redir("./index.php?view=editoriales");
+	$user = new EditorialData();
+	$user->name = $_POST["name"];
+	$user->add();
+
+print "<script>window.location='index.php?view=editorials';</script>";
+
+
 }
+
 
 ?>

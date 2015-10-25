@@ -1,10 +1,16 @@
-create database library;
-use library; 
+/**
+* @author evilnapsis
+* @brief Modelo de base de datos
+* @date 2015-10-24
+**/
+create database library2;
+use library2; 
 
-create table admin (
+create table user (
 	id int not null auto_increment primary key,
-	nombre varchar(50) not null,
-	apellido varchar(50) not null,
+	name varchar(50) not null,
+	lastname varchar(50) not null,
+	username varchar(50) not null,
 	email varchar(255) not null,
 	password varchar(60) not null,
 	is_active boolean not null default 1,
@@ -12,76 +18,83 @@ create table admin (
 	created_at datetime not null
 );
 
-insert into admin (email,password,is_admin) value ("admin","admin",1);
+insert into user (name,username,password,is_active,is_admin,created_at) value ("Administrador","admin",sha1(md5("admin")),1,1,NOW());
 
-create table usuario (
+create table client (
 	id int not null auto_increment primary key,
-	nombre varchar(50) not null,
-	apellido varchar(50) not null,
+	name varchar(50) not null,
+	lastname varchar(50) not null,
 	email varchar(255) not null,
-	direccion varchar(60) not null,
-	telefono varchar(60) not null,
+	address varchar(60) not null,
+	phone varchar(60) not null,
 	is_active boolean not null default 1,
 	created_at datetime not null
 );
 
-
-
-create table autor (
+create table author (
 	id int not null auto_increment primary key,
-	nombre varchar(200) not null,
-	apellido varchar(1000) not null
+	name varchar(200) not null,
+	lastname varchar(1000) not null
 );
 
 create table editorial (
 	id int not null auto_increment primary key,
-	nombre varchar(200) not null);
+	name varchar(200) not null);
 
-create table categoria (
+create table category (
 	id int not null auto_increment primary key,
-	nombre varchar(200) not null
+	name varchar(200) not null
 );
 
+create table status (
+	id int not null auto_increment primary key,
+	name varchar(200) not null
+);
 
-create table libro (
+insert into status (name) values ("Disponible"),("Ocupado"),("Inactivo");
+
+create table book (
 	id int not null auto_increment primary key,
 	isbn varchar(100),
-	titulo varchar(200) not null,
-	subtitulo varchar(1000) not null,
-	imagen varchar(255),
-	anio int,
-	num_pag int,
-	autor_id int not null,
-	editorial_id int not null,
-	categoria_id int not null,
-	foreign key (autor_id) references autor(id),
+	title varchar(200) not null,
+	subtitle varchar(1000) not null,
+	description varchar(1000) not null,
+	file varchar(255),
+	image varchar(255),
+	year int,
+	n_pag int,
+	author_id int,
+	editorial_id int,
+	category_id int,
+	foreign key (author_id) references author(id),
 	foreign key (editorial_id) references editorial(id),
-	foreign key (categoria_id) references categoria(id)
+	foreign key (category_id) references category(id)
 );
 
-
-create table ejemplar(
+create table item(
 	id int not null auto_increment primary key,
-	codigo varchar(100) unique,
-	libro_id int not null,
-	status int not null default 0,
-	foreign key (libro_id) references libro(id)
+	code varchar(100),
+	status_id int not null,
+	foreign key (status_id) references status(id),
+	book_id int not null,
+	foreign key (book_id) references book(id)
 );
 
-create table prestamo(
+create table rent(
 	id int not null auto_increment primary key,
-	ejemplar_id int not null,
-	usuario_id int not null,
-	created_at date not null,
-	return_at date not null,
+);
+
+create table operation(
+	id int not null auto_increment primary key,
+	item_id int not null,
+	client_id int not null,
+	start_at date not null,
+	finish_at date not null,
 	returned_at date,
-	prestador_id int not null,
+	user_id int not null,
 	receptor_id int ,
-	foreign key (usuario_id) references usuario(id),
-	foreign key (prestador_id) references admin(id),
-	foreign key (receptor_id) references admin(id),
-	foreign key (ejemplar_id) references ejemplar(id)
+	foreign key (client_id) references client(id),
+	foreign key (user_id) references user(id),
+	foreign key (receptor_id) references user(id),
+	foreign key (item_id) references item(id)
 );
-
-
-

@@ -5,19 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>.: ZARD v1.5 :.</title>
+    <title>.: Library v2.0 :.</title>
 
     <!-- Bootstrap core CSS -->
     <link href="res/bootstrap3/css/bootstrap.css" rel="stylesheet">
 
     <!-- Add custom CSS here -->
+    <link href="res/select2/select2.css" rel="stylesheet">
+    <link href="res/select2/select2-bootstrap.css" rel="stylesheet">
+
     <link href="css/sb-admin.css" rel="stylesheet">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
     <script src="js/jquery-1.10.2.js"></script>
-<script src="res/morris/raphael-min.js"></script>
-<script src="res/morris/morris.js"></script>
-  <link rel="stylesheet" href="res/morris/morris.css">
-  <link rel="stylesheet" href="res/morris/example.css">
+<?php if(isset($_GET["view"]) && $_GET["view"]=="home"):?>
+<link href='res/fullcalendar.min.css' rel='stylesheet' />
+<link href='res/fullcalendar.print.css' rel='stylesheet' media='print' />
+<script src='res/js/moment.min.js'></script>
+<script src='res/fullcalendar.min.js'></script>
+<?php endif; ?>
+<script src='res/select2/select2.min.js'></script>
 
   </head>
 
@@ -35,7 +41,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="./">Zard CMS  <sup><small><span class="label label-info">v1.5</span></small></sup> </a>
+          <a class="navbar-brand" href="./">Library <sup><small><span class="label label-info">v2.0</span></small></sup> </a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -43,23 +49,23 @@
 <?php 
 $u=null;
 if(Session::getUID()!=""):
-  $u = AdminData::getById(Session::getUID());
+  $u = UserData::getById(Session::getUID());
 ?>
          <ul class="nav navbar-nav">
-          <li><a href="../"><i class="fa fa-globe"></i> Ver Blog</a></li>
-          <li><a href="index.php?view=newpost"><i class="fa fa-asterisk"></i> Nuevo Post</a></li>
           </ul> 
           <ul class="nav navbar-nav side-nav">
-
-<li><a href="./"><i class="fa fa-fw fa-dashboard"></i> Inicio</a></li>
-<li><a href="./?view=prestamos"><i class="fa fa-fw fa-th-large"></i> Prestamos</a></li>
-                    <li><a href="./?view=books"><i class="fa fa-fw fa-picture-o"></i> Libros</a></li>
-                    <li><a href="./?view=usuarios"><i class="fa fa-fw fa-file"></i> Usuarios</a></li>
-                    <li><a href="./?view=admins"><i class="fa fa-fw fa-comments"></i> Administradores</a></li>
-                    <li><a href="./?view=autores"><i class="fa fa-fw fa-envelope-o"></i> Autores</a></li>
-                    <li><a href="./?view=editoriales"><i class="fa fa-fw fa-th-list"></i> Editoriales</a></li>    
-                    <li>        <a href="./?view=categorias"><i class="fa fa-fw fa-users"></i> Categorias</a></li>
-
+          <li><a href="index.php?view=home"><i class="fa fa-home"></i> Inicio</a></li>
+          <li><a href="index.php?view=rent"><i class="fa fa-cube"></i> Prestamo</a></li>
+          <li><a href="index.php?view=rents"><i class="fa fa-th-large"></i> Prestamos</a></li>
+          <li><a href="index.php?view=books"><i class="fa fa-book"></i> Libros</a></li>
+          <li><a href="index.php?view=clients"><i class="fa fa-male"></i> Clientes</a></li>
+          <li><a href="index.php?view=categories"><i class="fa fa-th-list"></i> Categorias</a></li>
+          <li><a href="index.php?view=editorials"><i class="fa fa-th-list"></i> Editoriales</a></li>
+          <li><a href="index.php?view=authors"><i class="fa fa-th-list"></i> Autores</a></li>
+          <?php if($u->is_admin):?>
+          <li><a href="index.php?view=reports"><i class="fa fa-area-chart"></i> Reportes</a></li>
+          <li><a href="index.php?view=users"><i class="fa fa-users"></i> Usuarios </a></li>
+        <?php endif;?>
           </ul>
 
 
@@ -73,11 +79,22 @@ if(Session::getUID()!=""):
 <?php 
 $u=null;
 if(Session::getUID()!=""){
-  $u = AdminData::getById(Session::getUID());
+  $u = UserData::getById(Session::getUID());
   $user = $u->name." ".$u->lastname;
 
   }?>
           <ul class="nav navbar-nav navbar-right navbar-user">
+            <li class="dropdown user-dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <b><u>EVILNΛPSIS</u></b> <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a target="_blank" href="http://evilnapsis.com/">Sitio Web</a></li>
+          <li><a target="_blank" href="http://evilnapsis.com/2015/05/16/sistema-bibliotecario-library/">Acerca de <b>Library</b></a></li>
+          <li><a target="_blank" href="http://evilnapsis.com/store/">Tienda de aplicaciones</a></li>
+        </ul>
+        </li>
+
             <li class="dropdown user-dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
         <?php echo $user; ?> <b class="caret"></b>
@@ -85,6 +102,8 @@ if(Session::getUID()!=""){
         <ul class="dropdown-menu">
           <li><a href="index.php?view=configuration">Configuracion</a></li>
           <li><a href="logout.php">Salir</a></li>
+        </ul>
+        </li>
         </ul>
 <?php else:?>
 <?php endif; ?>
@@ -95,47 +114,17 @@ if(Session::getUID()!=""){
         </div><!-- /.navbar-collapse -->
       </nav>
 
+
       <div id="page-wrapper">
 
 <?php 
-if(isset($_SESSION["user_id"])):
   // puedo cargar otras funciones iniciales
   // dentro de la funcion donde cargo la vista actual
   // como por ejemplo cargar el corte actual
-  View::load("index");
+  View::load("login");
 
 ?>
-<?php else:?>
-<br><br><br><br><br><div class="container">
-    <div class="row">
 
-        <div class="col-md-4 col-md-offset-4">
-        <div class="panel panel-default">
-        <div class="panel-heading">
-        Login
-        </div>
-        <div class="panel-body">
-        <form role="form" method="post" action="./?action=processlogin">
-  <div class="form-group">
-    <label for="exampleInputEmail1">Correo electronico</label>
-    <input type="text" name="email" class="form-control" id="exampleInputEmail1" placeholder="Correo electronico">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-  </div>
-  <button type="submit" class="btn btn-block btn-default">Acceder</button>
-<!--<br>  <a href="./?r=auth/recover">Olvide mi contrase&ntilde;a ...</a>-->
-</form>
-        </div>
-        </div>
-        <!-- -->
-
-        </div>
-    </div>
-</div>
-
-<?php endif;?>
 
 
       </div><!-- /#page-wrapper -->
@@ -145,6 +134,7 @@ if(isset($_SESSION["user_id"])):
     <!-- JavaScript -->
 
 <script src="res/bootstrap3/js/bootstrap.min.js"></script>
-
+<script>
+</script>
   </body>
 </html>

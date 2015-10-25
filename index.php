@@ -1,5 +1,6 @@
 <?php
 /**
+* BookMedik v2.0
 * @author evilnapsis
 * @brief Libera la bestia ...
 **/
@@ -10,9 +11,5 @@ include "core/autoload.php";
 $lb = new Lb();
 $lb->loadModule("index");
 
-
-/**
-* Zard CMS
-**/
 
 ?>

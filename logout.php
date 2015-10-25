@@ -11,5 +11,5 @@ if(isset($_SESSION['user_id'])){
 session_destroy();
 // v0 29 jul 2013
 //estemos donde estemos nos redirije al index
-print "<script>window.location='./';</script>";
+print "<script>window.location='index.php';</script>";
 ?>
