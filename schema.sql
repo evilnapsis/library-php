@@ -80,10 +80,6 @@ create table item(
 	foreign key (book_id) references book(id)
 );
 
-create table rent(
-	id int not null auto_increment primary key,
-);
-
 create table operation(
 	id int not null auto_increment primary key,
 	item_id int not null,
