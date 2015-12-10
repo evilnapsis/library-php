@@ -68,7 +68,7 @@ $client = $sell->getClient();
 		<a href="index.php?action=finalize&id=<?php echo $sell->id; ?>" class="btn btn-xs btn-success">Finalizar</a>
 	<?php endif;?>
 		</td>
-		<td style="width:30px;"><a href="index.php?view=delsell&id=<?php echo $sell->id; ?>" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a></td>
+		<td style="width:30px;"><a href="index.php?action=deloperation&id=<?php echo $sell->id; ?>" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a></td>
 	</tr>
 <?php endforeach; ?>
 </table>
