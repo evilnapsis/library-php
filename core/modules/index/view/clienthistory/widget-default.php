@@ -7,7 +7,7 @@ $client = ClientData::getById($_GET["id"]);
 <br>
 <form class="form-horizontal" role="form">
 <input type="hidden" name="view" value="itemhistory">
-<input type="hidden" name="id" value="<?php echo $item->id; ?>">
+<input type="hidden" name="id" value="<?php echo $client->id; ?>">
   <div class="form-group">
     <div class="col-lg-3">
 		<div class="input-group">

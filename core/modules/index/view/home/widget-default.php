@@ -1,6 +1,6 @@
 <?php
 
-
+$thejson = array();
 $events = OperationData::getRents();
 foreach($events as $event){
 	$item = ItemData::getById($event->item_id);
