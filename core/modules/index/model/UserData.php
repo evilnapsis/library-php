@@ -2,7 +2,7 @@
 class UserData {
 	public static $tablename = "user";
 
-	public function UserData(){
+	public function __construct(){
 		$this->name = "";
 		$this->lastname = "";
 		$this->username = "";

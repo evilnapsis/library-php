@@ -3,7 +3,7 @@ class EditorialData {
 	public static $tablename = "editorial";
 
 
-	public function EditorialData(){
+	public function __construct(){
 		$this->name = "";
 		$this->lastname = "";
 		$this->email = "";
