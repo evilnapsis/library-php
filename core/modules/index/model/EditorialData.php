@@ -1,6 +1,7 @@
 <?php
 class EditorialData {
 	public static $tablename = "editorial";
+	public $id, $name;
 
 
 	public function __construct(){

@@ -1,6 +1,8 @@
 <?php
 class ClientData {
 	public static $tablename = "client";
+
+	public $id, $name, $lastname, $address, $phone, $email, $created_at, $last_active_at;
 	public function __construct(){
 		$this->is_public = "0";
 		$this->created_at = "NOW()";

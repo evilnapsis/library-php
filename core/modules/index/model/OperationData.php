@@ -1,6 +1,7 @@
 <?php
 class OperationData {
 	public static $tablename = "operation";
+	public $id, $client_id, $item_id, $user_id, $created_at;
 
 
 	public function __construct(){

@@ -1,6 +1,7 @@
 <?php
 class ItemData {
 	public static $tablename = "item";
+	public $id, $code, $name, $description, $price_in, $price_out, $created_at;
 
 
 	public function ItemData(){
