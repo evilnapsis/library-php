@@ -2,6 +2,8 @@
 * @author evilnapsis
 * @brief Modelo de base de datos
 * @date 2015-10-24
+* @update 2026-03-05
+* @version 3.0
 **/
 create database library2;
 use library2; 
@@ -94,3 +96,9 @@ create table operation(
 	foreign key (receptor_id) references user(id),
 	foreign key (item_id) references item(id)
 );
+
+/**
+* Gracias por Usar Library PPH
+* Powered by Evilnapsis
+* https://evilnapsis.com
+*/
