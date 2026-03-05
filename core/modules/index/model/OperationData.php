@@ -5,10 +5,6 @@ class OperationData {
 
 
 	public function __construct(){
-		$this->name = "";
-		$this->lastname = "";
-		$this->email = "";
-		$this->password = "";
 		$this->created_at = "NOW()";
 	}
 

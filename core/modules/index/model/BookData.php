@@ -5,12 +5,8 @@ class BookData {
 
 
 	public function __construct(){
-		$this->name = "";
-		$this->lastname = "";
-		$this->email = "";
-		$this->password = "";
-		$this->created_at = "NOW()";
-	}
+		$this->title = "";
+		}
 
 	public function getCategory(){ return $this->category_id!=null? CategoryData::getById($this->category_id) : null ; }
 	public function getEditorial(){ return $this->editorial_id!=null? EditorialData::getById($this->editorial_id) : null ; }

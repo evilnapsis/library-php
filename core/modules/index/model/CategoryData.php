@@ -1,14 +1,11 @@
 <?php
 class CategoryData {
 	public static $tablename = "category";
+	public $id, $name;
 
 
 	public function __construct(){
 		$this->name = "";
-		$this->lastname = "";
-		$this->email = "";
-		$this->password = "";
-		$this->created_at = "NOW()";
 	}
 
 	public function add(){
