@@ -1,6 +1,7 @@
 <?php
 class BookData {
 	public static $tablename = "book";
+	public $id, $isbn, $title, $subtitle, $description, $n_pag, $year, $category_id, $editorial_id, $author_id;
 
 
 	public function __construct(){

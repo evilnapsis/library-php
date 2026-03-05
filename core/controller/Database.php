@@ -2,6 +2,9 @@
 class Database {
 	public static $db;
 	public static $con;
+
+	public $user, $pass, $host, $ddbb;
+
 	function __construct(){
 		$this->user="root";$this->pass="";$this->host="localhost";$this->ddbb="library2";
 	}
