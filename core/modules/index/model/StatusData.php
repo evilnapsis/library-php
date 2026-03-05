@@ -2,6 +2,8 @@
 class StatusData {
 	public static $tablename = "status";
 
+	public $id, $name;
+
 
 	public function StatusData(){
 		$this->name = "";
