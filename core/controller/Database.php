@@ -6,7 +6,7 @@ class Database {
 	public $user, $pass, $host, $ddbb;
 
 	function __construct(){
-		$this->user="root";$this->pass="";$this->host="localhost";$this->ddbb="library2";
+		$this->user="root";$this->pass="";$this->host="localhost";$this->ddbb="library2"; // Windows
 	}
 
 	function connect(){
