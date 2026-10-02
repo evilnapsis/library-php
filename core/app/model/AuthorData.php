@@ -1,9 +1,11 @@
 <?php
+// Model for Book Authors
 class AuthorData {
 	public static $tablename = "author";
 
-	public $id, $name, $lastname;
-
+	public $id;
+	public $name;
+	public $lastname;
 
 	public function __construct(){
 		$this->name = "";
@@ -11,46 +13,36 @@ class AuthorData {
 	}
 
 	public function add(){
-		$sql = "insert into author (name,lastname) ";
-		$sql .= "value (\"$this->name\",\"$this->lastname\")";
-		return Executor::doit($sql);
+		$sql = "insert into ".self::$tablename." (name, lastname) values (:name, :lastname)";
+		return Executor::doit($sql, [
+			':name' => $this->name,
+			':lastname' => $this->lastname
+		]);
 	}
 
 	public static function delById($id){
-		$sql = "delete from ".self::$tablename." where id=$id";
-		Executor::doit($sql);
-	}
-	public function del(){
-		$sql = "delete from ".self::$tablename." where id=$this->id";
-		Executor::doit($sql);
+		$sql = "delete from ".self::$tablename." where id=:id";
+		return Executor::doit($sql, [':id' => $id]);
 	}
 
-// partiendo de que ya tenemos creado un objecto AuthorData previamente utilizamos el contexto
 	public function update(){
-		$sql = "update ".self::$tablename." set name=\"$this->name\",lastname=\"$this->lastname\" where id=$this->id";
-		Executor::doit($sql);
+		$sql = "update ".self::$tablename." set name=:name, lastname=:lastname where id=:id";
+		return Executor::doit($sql, [
+			':name' => $this->name,
+			':lastname' => $this->lastname,
+			':id' => $this->id
+		]);
 	}
 
 	public static function getById($id){
-		$sql = "select * from ".self::$tablename." where id=$id";
-		$query = Executor::doit($sql);
-		return Model::one($query[0],new AuthorData());
+		$sql = "select * from ".self::$tablename." where id=:id";
+		$query = Executor::doit($sql, [':id' => $id]);
+		return Model::one($query[0], new AuthorData());
 	}
 
 	public static function getAll(){
-		$sql = "select * from ".self::$tablename;
+		$sql = "select * from ".self::$tablename." order by name asc, lastname asc";
 		$query = Executor::doit($sql);
-		return Model::many($query[0],new AuthorData());
-
+		return Model::many($query[0], new AuthorData());
 	}
-	
-	public static function getLike($q){
-		$sql = "select * from ".self::$tablename." where name like '%$q%'";
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new AuthorData());
-	}
-
-
 }
-
-?>

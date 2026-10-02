@@ -17,7 +17,7 @@ class Model {
 	}
 
 	public static function getFullpath($modelname){
-		return "core/app/model/".$modelname.".php";
+		return dirname(__DIR__) . "/app/model/" . $modelname . ".php";
 	}
 
 	public static function many($query,$aclass){

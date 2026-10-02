@@ -1,75 +1,66 @@
 <?php
+// Model for Library Members / Clients
 class ClientData {
 	public static $tablename = "client";
 
-	public $id, $name, $lastname, $address, $phone, $email, $created_at, $last_active_at, $is_active;
+	public $id;
+	public $name;
+	public $lastname;
+	public $email;
+	public $address;
+	public $phone;
+	public $is_active;
+	public $created_at;
+
 	public function __construct(){
-		$this->created_at = "NOW()";
+		$this->name = "";
+		$this->lastname = "";
+		$this->email = "";
+		$this->address = "";
+		$this->phone = "";
+		$this->is_active = 1;
 	}
 
 	public function add(){
-		$sql = "insert into ".self::$tablename." (name,lastname,address,phone,email,created_at) ";
-		$sql .= "value (\"$this->name\",\"$this->lastname\",\"$this->address\",\"$this->phone\",\"$this->email\",$this->created_at)";
-		Executor::doit($sql);
+		$sql = "insert into ".self::$tablename." (name, lastname, email, address, phone, is_active, created_at) ";
+		$sql .= "values (:name, :lastname, :email, :address, :phone, :is_active, NOW())";
+		return Executor::doit($sql, [
+			':name' => $this->name,
+			':lastname' => $this->lastname,
+			':email' => $this->email,
+			':address' => $this->address,
+			':phone' => $this->phone,
+			':is_active' => $this->is_active
+		]);
 	}
 
 	public static function delById($id){
-		$sql = "delete from ".self::$tablename." where id=$id";
-		Executor::doit($sql);
+		$sql = "delete from ".self::$tablename." where id=:id";
+		return Executor::doit($sql, [':id' => $id]);
 	}
-	public function del(){
-		$sql = "delete from ".self::$tablename." where id=$this->id";
-		Executor::doit($sql);
-	}
-
-// partiendo de que ya tenemos creado un objecto ClientData previamente utilizamos el contexto
-	public function update_active(){
-		$sql = "update ".self::$tablename." set last_active_at=NOW() where id=$this->id";
-		Executor::doit($sql);
-	}
-
 
 	public function update(){
-		$sql = "update ".self::$tablename." set name=\"$this->name\",lastname=\"$this->lastname\",address=\"$this->address\",phone=\"$this->phone\",email=\"$this->email\" where id=$this->id";
-		Executor::doit($sql);
+		$sql = "update ".self::$tablename." set name=:name, lastname=:lastname, email=:email, address=:address, phone=:phone, is_active=:is_active where id=:id";
+		return Executor::doit($sql, [
+			':name' => $this->name,
+			':lastname' => $this->lastname,
+			':email' => $this->email,
+			':address' => $this->address,
+			':phone' => $this->phone,
+			':is_active' => $this->is_active,
+			':id' => $this->id
+		]);
 	}
 
 	public static function getById($id){
-		$sql = "select * from ".self::$tablename." where id=$id";
-		$query = Executor::doit($sql);
-		return Model::one($query[0],new ClientData());
+		$sql = "select * from ".self::$tablename." where id=:id";
+		$query = Executor::doit($sql, [':id' => $id]);
+		return Model::one($query[0], new ClientData());
 	}
-
 
 	public static function getAll(){
-		$sql = "select *  from ".self::$tablename." order by created_at desc";
+		$sql = "select * from ".self::$tablename." order by name asc, lastname asc";
 		$query = Executor::doit($sql);
-		return Model::many($query[0],new ClientData());
+		return Model::many($query[0], new ClientData());
 	}
-
-	public static function getAllActive(){
-		$sql = "select * from client where last_active_at>=date_sub(NOW(),interval 3 second)";
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new ClientData());
-	}
-
-	public static function getAllUnActive(){
-		$sql = "select * from client where last_active_at<=date_sub(NOW(),interval 3 second)";
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new ClientData());
-	}
-
-
-	public function getUnreads(){ return MessageData::getUnreadsByClientId($this->id); }
-
-
-	public static function getLike($q){
-		$sql = "select * from ".self::$tablename." where title like '%$q%' or email like '%$q%'";
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new ClientData());
-	}
-
-
 }
-
-?>

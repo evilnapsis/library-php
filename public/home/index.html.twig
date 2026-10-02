@@ -1,0 +1,461 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Dashboard - Library 2{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+  <!-- Encabezado de Bienvenida y Acciones Rápidas -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <h3 class="fw-bold mb-1 text-dark">
+        <i class="bi bi-book-half text-primary me-2"></i>Panel de Control Bibliotecario
+      </h3>
+      <p class="text-body-secondary mb-0">Resumen operativo del acervo bibliográfico, analítica de préstamos y títulos recientes.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ base_url }}/loans/new" class="btn btn-sm btn-primary shadow-sm">
+        <i class="bi bi-journal-arrow-up me-1"></i> + Nuevo Préstamo
+      </a>
+      <a href="{{ base_url }}/books/new" class="btn btn-sm btn-outline-primary shadow-sm">
+        <i class="bi bi-book me-1"></i> + Registrar Libro
+      </a>
+      <a href="{{ base_url }}/clients/new" class="btn btn-sm btn-outline-secondary shadow-sm">
+        <i class="bi bi-person-plus me-1"></i> + Nuevo Lector
+      </a>
+    </div>
+  </div>
+
+  <!-- Tarjetas de Métricas Estadísticas (KPIs) -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-4 col-xl">
+      <div class="card text-white bg-primary shadow-sm border-0 h-100">
+        <div class="card-body p-3 d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fs-3 fw-bold">{{ totalBooks }}</div>
+            <div class="small text-white-50 text-uppercase fw-semibold">Títulos en Catálogo</div>
+            <a href="{{ base_url }}/books" class="text-white text-decoration-none small d-inline-block mt-2">
+              Ver catálogo <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+          <div class="fs-1 opacity-50"><i class="bi bi-journal-text"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 col-xl">
+      <div class="card text-white bg-info shadow-sm border-0 h-100">
+        <div class="card-body p-3 d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fs-3 fw-bold">{{ totalCopies }}</div>
+            <div class="small text-white-50 text-uppercase fw-semibold">Ejemplares Físicos</div>
+            <span class="text-white text-decoration-none small d-inline-block mt-2">
+              En acervo general
+            </span>
+          </div>
+          <div class="fs-1 opacity-50"><i class="bi bi-collection"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 col-xl">
+      <div class="card text-white bg-success shadow-sm border-0 h-100">
+        <div class="card-body p-3 d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fs-3 fw-bold">{{ availableCopies }}</div>
+            <div class="small text-white-50 text-uppercase fw-semibold">Disponibles</div>
+            <span class="text-white text-decoration-none small d-inline-block mt-2">
+              Listos para préstamo
+            </span>
+          </div>
+          <div class="fs-1 opacity-50"><i class="bi bi-check2-circle"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-6 col-xl">
+      <div class="card text-white bg-warning shadow-sm border-0 h-100">
+        <div class="card-body p-3 d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fs-3 fw-bold text-dark">{{ activeLoans }}</div>
+            <div class="small text-dark text-uppercase fw-bold opacity-75">Préstamos Activos</div>
+            <a href="{{ base_url }}/loans" class="text-dark text-decoration-none small d-inline-block mt-2 fw-semibold">
+              Ver préstamos <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+          <div class="fs-1 text-dark opacity-50"><i class="bi bi-arrow-left-right"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-6 col-xl">
+      <div class="card text-white bg-secondary shadow-sm border-0 h-100">
+        <div class="card-body p-3 d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fs-3 fw-bold">{{ totalClients }}</div>
+            <div class="small text-white-50 text-uppercase fw-semibold">Lectores / Socios</div>
+            <a href="{{ base_url }}/clients" class="text-white text-decoration-none small d-inline-block mt-2">
+              Ver socios <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+          <div class="fs-1 opacity-50"><i class="bi bi-people"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de Gráficas Estadísticas -->
+  <div class="row g-4 mb-4">
+    <!-- Gráfica 1: Últimos Préstamos (Línea de Tiempo) -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 fw-bold text-dark">
+            <i class="bi bi-graph-up-arrow text-primary me-2"></i>Evolución de Préstamos (Últimos 14 Días)
+          </h6>
+          <span class="badge bg-light text-muted border">Frecuencia Diaria</span>
+        </div>
+        <div class="card-body">
+          <div style="position: relative; height: 260px;">
+            <canvas id="chartLoansTimeline"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfica 2: Categorías Populares (Doughnut) -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 fw-bold text-dark">
+            <i class="bi bi-pie-chart-fill text-info me-2"></i>Categorías Populares
+          </h6>
+          <span class="badge bg-light text-muted border">Preferencia Lectores</span>
+        </div>
+        <div class="card-body d-flex align-items-center justify-content-center">
+          <div style="position: relative; height: 260px; width: 100%;">
+            <canvas id="chartCategories"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfica 3: Libros Más Populares (Barras Horizontales) -->
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 fw-bold text-dark">
+            <i class="bi bi-trophy-fill text-warning me-2"></i>Libros Más Populares (Mayor Demanda de Préstamos)
+          </h6>
+          <span class="badge bg-light text-muted border">Top Préstamos Históricos</span>
+        </div>
+        <div class="card-body">
+          <div style="position: relative; height: 220px;">
+            <canvas id="chartPopularBooks"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección: Últimos Libros Agregados al Catálogo -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h5 class="fw-bold mb-0 text-dark">
+        <i class="bi bi-stars text-warning me-2"></i>Últimos Libros Agregados al Acervo
+      </h5>
+      <small class="text-body-secondary">Títulos recientemente incorporados al catálogo bibliográfico</small>
+    </div>
+    <a href="{{ base_url }}/books" class="btn btn-sm btn-outline-primary shadow-sm rounded-pill px-3">
+      <i class="bi bi-book me-1"></i> Ver Catálogo Completo
+    </a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    {% for b in latest_books %}
+      <div class="col-md-6 col-xl-4">
+        <div class="card h-100 border-0 shadow-sm card-hover">
+          <div class="card-body p-3">
+            <div class="d-flex align-items-start gap-3">
+              <!-- Ícono / Portada de Libro -->
+              <div class="bg-primary-subtle text-primary rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 52px; height: 68px; min-width: 52px;">
+                <i class="bi bi-book-fill fs-3"></i>
+              </div>
+
+              <!-- Información del Libro -->
+              <div class="flex-grow-1 overflow-hidden">
+                <div class="d-flex justify-content-between align-items-start gap-1">
+                  <h6 class="fw-bold text-dark mb-1 text-truncate" title="{{ b.title }}">
+                    <a href="{{ base_url }}/book/{{ b.id }}" class="text-decoration-none text-dark hover-primary">
+                      {{ b.title }}
+                    </a>
+                  </h6>
+                </div>
+                
+                <p class="text-muted small mb-1 text-truncate">
+                  <i class="bi bi-pen me-1"></i>{{ b.author ? (b.author.name ~ ' ' ~ b.author.lastname) : 'Autor Desconocido' }}
+                </p>
+
+                <div class="d-flex flex-wrap gap-1 mb-2">
+                  {% if b.category %}
+                    <span class="badge bg-light text-dark border py-0 small">{{ b.category.name }}</span>
+                  {% endif %}
+                  {% if b.year %}
+                    <span class="badge bg-secondary-subtle text-secondary py-0 small">{{ b.year }}</span>
+                  {% endif %}
+                </div>
+
+                <!-- Stock / Disponibilidad de Ejemplares -->
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                  <small class="text-muted">
+                    {% if b.available_copies > 0 %}
+                      <span class="badge bg-success-subtle text-success border border-success-subtle">
+                        <i class="bi bi-check-circle me-1"></i>{{ b.available_copies }} de {{ b.total_copies }} disp.
+                      </span>
+                    {% else %}
+                      <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                        <i class="bi bi-x-circle me-1"></i>Agotado (0/{{ b.total_copies }})
+                      </span>
+                    {% endif %}
+                  </small>
+                  
+                  <div class="btn-group">
+                    <a href="{{ base_url }}/book/{{ b.id }}" class="btn btn-xs btn-outline-secondary" title="Ver Detalles y Ejemplares">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{{ base_url }}/book/{{ b.id }}/edit" class="btn btn-xs btn-outline-primary" title="Editar">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-12">
+        <div class="card p-4 text-center text-muted border-0 shadow-sm">
+          No hay libros registrados en el catálogo aún.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Préstamos Activos y Devoluciones Próximas -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h6 class="card-title mb-0 fw-bold text-dark">
+        <i class="bi bi-clock-history me-2 text-warning"></i>Préstamos en Curso y Devoluciones Pendientes
+      </h6>
+      <a href="{{ base_url }}/loans" class="btn btn-sm btn-outline-secondary">Ver Todos los Préstamos</a>
+    </div>
+    <div class="card-body p-0">
+      {% if loans is empty %}
+        <div class="p-4 text-center text-muted">No hay préstamos activos en este momento.</div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-3">Folio</th>
+                <th>Código Ejemplar</th>
+                <th>Libro / Título</th>
+                <th>Lector / Socio</th>
+                <th>Fecha Salida</th>
+                <th>Fecha Límite</th>
+                <th>Estado</th>
+                <th class="text-end pe-3">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for l in loans %}
+                <tr class="{{ l.is_overdue ? 'table-danger' : '' }}">
+                  <td class="ps-3 fw-bold">#{{ l.id }}</td>
+                  <td><span class="badge bg-primary fs-6">{{ l.item ? l.item.code : 'N/A' }}</span></td>
+                  <td class="fw-bold">{{ l.item and l.item.book ? l.item.book.title : '-' }}</td>
+                  <td>{{ l.client ? (l.client.name ~ ' ' ~ l.client.lastname) : '-' }}</td>
+                  <td>{{ l.start_at }}</td>
+                  <td>
+                    {{ l.finish_at }}
+                    {% if l.is_overdue %}
+                      <span class="badge bg-danger ms-1">Atrasado</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if l.is_overdue %}
+                      <span class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>Plazo Vencido</span>
+                    {% else %}
+                      <span class="badge bg-warning text-dark"><i class="bi bi-clock me-1"></i>A Tiempo</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end pe-3">
+                    <a href="{{ base_url }}/loans/return/{{ l.id }}" class="btn btn-xs btn-success text-white shadow-sm" title="Registrar Devolución" onclick="return confirm('¿Registrar devolución de este ejemplar?');">
+                      <i class="bi bi-box-arrow-in-down me-1"></i> Devolver
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+.hover-primary:hover {
+  color: #4f46e5 !important;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // 1. Gráfica de Línea de Tiempo de Préstamos (Últimos 14 días)
+  const ctxTimeline = document.getElementById('chartLoansTimeline').getContext('2d');
+  
+  // Crear gradiente suave
+  const gradient = ctxTimeline.createLinearGradient(0, 0, 0, 240);
+  gradient.addColorStop(0, 'rgba(79, 70, 229, 0.35)');
+  gradient.addColorStop(1, 'rgba(79, 70, 229, 0.02)');
+
+  new Chart(ctxTimeline, {
+    type: 'line',
+    data: {
+      labels: {{ loans_timeline_labels|json_encode|raw }},
+      datasets: [{
+        label: 'Préstamos Registrados',
+        data: {{ loans_timeline_data|json_encode|raw }},
+        borderColor: '#4f46e5',
+        backgroundColor: gradient,
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.35,
+        pointBackgroundColor: '#ffffff',
+        pointBorderColor: '#4f46e5',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          padding: 10,
+          backgroundColor: '#1e293b'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0,
+            stepSize: 1
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)'
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      }
+    }
+  });
+
+  // 2. Gráfica de Categorías Populares (Doughnut)
+  const ctxCats = document.getElementById('chartCategories').getContext('2d');
+  new Chart(ctxCats, {
+    type: 'doughnut',
+    data: {
+      labels: {{ popular_categories_labels|json_encode|raw }},
+      datasets: [{
+        data: {{ popular_categories_data|json_encode|raw }},
+        backgroundColor: [
+          '#4f46e5',
+          '#06b6d4',
+          '#10b981',
+          '#f59e0b',
+          '#ef4444',
+          '#8b5cf6'
+        ],
+        borderWidth: 2,
+        borderColor: '#ffffff',
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            boxWidth: 12,
+            padding: 12,
+            font: {
+              size: 11
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // 3. Gráfica de Libros Más Populares (Barras Horizontales)
+  const ctxBooks = document.getElementById('chartPopularBooks').getContext('2d');
+  new Chart(ctxBooks, {
+    type: 'bar',
+    data: {
+      labels: {{ popular_books_labels|json_encode|raw }},
+      datasets: [{
+        label: 'Préstamos Realizados',
+        data: {{ popular_books_data|json_encode|raw }},
+        backgroundColor: [
+          'rgba(79, 70, 229, 0.85)',
+          'rgba(6, 182, 212, 0.85)',
+          'rgba(16, 185, 129, 0.85)',
+          'rgba(245, 158, 11, 0.85)',
+          'rgba(139, 92, 246, 0.85)'
+        ],
+        borderRadius: 6,
+        barThickness: 20
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0,
+            stepSize: 1
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)'
+          }
+        },
+        y: {
+          grid: {
+            display: false
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+{% endblock %}

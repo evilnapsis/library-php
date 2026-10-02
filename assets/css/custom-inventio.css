@@ -1,0 +1,312 @@
+/* Card overrides to match inventio-new / Mecharocket style */
+.card {
+    border: 0 !important;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    margin-bottom: 1.5rem !important;
+    border-radius: 0.5rem !important;
+}
+
+.card-header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    padding: 1.1rem 1.5rem !important;
+    color: #374151 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    border-top-left-radius: 0.5rem !important;
+    border-top-right-radius: 0.5rem !important;
+}
+
+.card-body {
+    padding: 1.5rem !important;
+}
+
+.card-body.p-0 {
+    padding: 0 !important;
+}
+
+.card-footer {
+    background-color: #ffffff !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    padding: 1rem 1.5rem !important;
+    border-bottom-left-radius: 0.5rem !important;
+    border-bottom-right-radius: 0.5rem !important;
+}
+
+/* Table overrides to match inventio-new / Mecharocket style */
+.table {
+    vertical-align: middle !important;
+    border-collapse: collapse !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.table thead, 
+.table .table-light {
+    background-color: #f8f9fa !important;
+    color: #374151 !important;
+}
+
+.table thead th {
+    font-weight: 700 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+    padding: 0.9rem 1.25rem !important;
+    text-transform: uppercase !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 0.05em !important;
+}
+
+.table tbody td {
+    padding: 0.9rem 1.25rem !important;
+    font-size: 0.9rem !important;
+}
+
+.table.table-sm thead th,
+.table.table-sm tbody td {
+    padding: 0.35rem 0.6rem !important;
+    font-size: 0.85rem !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Titles and Headers styling */
+.body h1, 
+.body h2, 
+h1, 
+h2 {
+    font-size: 1.6rem !important;
+    font-weight: 800 !important;
+    color: #1f2937 !important;
+    margin-bottom: 1.25rem !important;
+    letter-spacing: -0.02em !important;
+}
+
+/* Form Controls & Inputs styling */
+.form-control, 
+.form-select {
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.375rem !important;
+    padding: 0.475rem 0.75rem !important;
+    font-size: 0.9rem !important;
+    color: #374151 !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+.form-control:focus, 
+.form-select:focus {
+    border-color: #5856d6 !important;
+    box-shadow: 0 0 0 0.25rem rgba(88, 86, 214, 0.18) !important;
+    outline: 0 !important;
+}
+
+/* Button overrides for standard Bootstrap 5 look */
+.btn {
+    border-radius: 0.375rem !important;
+    font-weight: 600 !important;
+    padding: 0.475rem 1rem !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s !important;
+}
+
+.btn-xs {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.75rem !important;
+    border-radius: 0.25rem !important;
+}
+
+.btn-primary {
+    background-color: #5856d6 !important;
+    border-color: #5856d6 !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover {
+    background-color: #4643c1 !important;
+    border-color: #413ea3 !important;
+}
+
+.btn-info {
+    background-color: #39f !important;
+    border-color: #39f !important;
+    color: #ffffff !important;
+}
+
+.btn-info:hover {
+    background-color: #2982d9 !important;
+    border-color: #2475c4 !important;
+}
+
+/* Select2 overrides to match Bootstrap 5 theme */
+.select2-container--default .select2-selection--single {
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.375rem !important;
+    height: calc(2.25rem + 2px) !important;
+    padding: 0.375rem 0.75rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 1.5 !important;
+    color: #374151 !important;
+    padding-left: 0 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+}
+
+/* Jumbotron style overrides for empty states */
+.jumbotron {
+    padding: 3rem 2rem !important;
+    background-color: #f8f9fa !important;
+    border-radius: 0.5rem !important;
+    text-align: center !important;
+    border: 1px dashed rgba(0, 0, 0, 0.1) !important;
+    margin: 1.5rem 0 !important;
+}
+
+.jumbotron h2 {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #4f5d73 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.jumbotron p {
+    color: #6c757d !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 0 !important;
+}
+
+.card-hover {
+    transition: transform 0.22s ease-in-out, box-shadow 0.22s ease-in-out !important;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ========================================================
+   LIBRARY 2 - MODERN THEME & SIDEBAR STYLING
+   ======================================================== */
+.sidebar,
+.sidebar-dark {
+    background: #0c1923 !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.sidebar-header {
+    background: #071018 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 1.1rem 1.25rem !important;
+}
+
+.sidebar-header .sidebar-brand {
+    text-decoration: none !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    transition: transform 0.2s ease, opacity 0.2s ease !important;
+}
+
+.sidebar-header .sidebar-brand:hover,
+.sidebar-header .sidebar-brand:focus {
+    text-decoration: none !important;
+    opacity: 0.95 !important;
+    transform: scale(1.02) !important;
+}
+
+.sidebar-brand-full {
+    color: #ffffff !important;
+    letter-spacing: 0.03em;
+}
+
+.sidebar-brand-full .brand-icon,
+.sidebar-brand-full i {
+    color: #10b981 !important;
+    transition: transform 0.2s ease;
+}
+
+.sidebar-header .sidebar-brand:hover .brand-icon,
+.sidebar-header .sidebar-brand:hover i {
+    transform: rotate(-8deg) scale(1.1);
+}
+
+.sidebar-brand-full .brand-accent,
+.sidebar-brand-full .text-primary {
+    color: #14b8a6 !important;
+}
+
+.sidebar-brand-narrow {
+    color: #14b8a6 !important;
+    font-weight: 800 !important;
+}
+
+.sidebar .sidebar-nav .nav-title {
+    color: #567082 !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    margin-top: 1rem !important;
+    padding: 0.5rem 1.25rem 0.25rem !important;
+}
+
+/* Nav Item Link Base */
+.sidebar .sidebar-nav .nav-link {
+    color: #94a9b8 !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    padding: 0.65rem 1rem !important;
+    margin: 3px 12px !important;
+    border-radius: 8px !important;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.sidebar .sidebar-nav .nav-link .nav-icon {
+    color: #627d91 !important;
+    font-size: 1.1rem !important;
+    margin-right: 0.75rem !important;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Hover Effect - Luminous Emerald/Teal Glow */
+.sidebar .sidebar-nav .nav-link:hover {
+    background: rgba(20, 184, 166, 0.14) !important;
+    color: #ffffff !important;
+    transform: translateX(4px) !important;
+}
+
+.sidebar .sidebar-nav .nav-link:hover .nav-icon {
+    color: #2dd4bf !important;
+    transform: scale(1.15) !important;
+}
+
+/* Selected / Active Element - Emerald/Teal Gradient */
+.sidebar .sidebar-nav .nav-link.active,
+.sidebar .sidebar-nav .nav-item.active > .nav-link {
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.38) !important;
+    transform: none !important;
+}
+
+.sidebar .sidebar-nav .nav-link.active .nav-icon,
+.sidebar .sidebar-nav .nav-item.active > .nav-link .nav-icon {
+    color: #ffffff !important;
+}
+
+.sidebar-footer {
+    background: #071018 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.sidebar-toggler {
+    background-color: transparent !important;
+}

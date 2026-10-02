@@ -1,0 +1,85 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Editar Usuario{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-bold"><i class="bi bi-pencil me-2"></i>Editar Usuario: {{ user.username }}</h5>
+          <a href="{{ base_url }}/users" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver
+          </a>
+        </div>
+        <div class="card-body">
+          {% if errors is defined and errors is not empty %}
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                {% for err in errors %}
+                  <li>{{ err }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <form method="POST" action="{{ base_url }}/users/update/{{ user.id }}">
+            {{ csrf_field() }}
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Nombre *</label>
+                <input type="text" name="name" class="form-control" required value="{{ user.name }}">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Apellido *</label>
+                <input type="text" name="lastname" class="form-control" required value="{{ user.lastname }}">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Nombre de Usuario *</label>
+                <input type="text" name="username" class="form-control" required value="{{ user.username }}">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Correo Electrónico</label>
+                <input type="email" name="email" class="form-control" value="{{ user.email }}">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Nueva Contraseña (dejar en blanco si no cambia)</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••">
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label fw-bold">Rol</label>
+                <select name="kind" class="form-select">
+                  <option value="1" {{ (user.kind == 1 or user.is_admin == 1) ? 'selected' : '' }}>Administrador</option>
+                  <option value="2" {{ (user.kind == 2 and user.is_admin != 1) ? 'selected' : '' }}>Operador</option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label fw-bold">Estado</label>
+                <select name="status" class="form-select">
+                  <option value="1" {{ (user.status == 1 or user.is_active == 1) ? 'selected' : '' }}>Activo</option>
+                  <option value="2" {{ (user.status == 2 or (user.is_active is defined and user.is_active == 0)) ? 'selected' : '' }}>Inactivo</option>
+                </select>
+              </div>
+
+              <div class="col-12 text-end mt-4">
+                <a href="{{ base_url }}/users" class="btn btn-secondary me-2">Cancelar</a>
+                <button type="submit" class="btn btn-primary px-4">
+                  <i class="bi bi-save me-1"></i> Guardar Cambios
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

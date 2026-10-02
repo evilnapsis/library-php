@@ -1,94 +1,100 @@
 <?php
+// Model for Physical Book Copy / Item
 class ItemData {
 	public static $tablename = "item";
-	public $id, $code, $name, $description, $price_in, $price_out, $created_at, $book_id, $status_id, $c;
 
+	public $id;
+	public $code;
+	public $status_id;
+	public $book_id;
 
-	public function ItemData(){
-		$this->name = "";
-		$this->lastname = "";
-		$this->email = "";
-		$this->password = "";
-		$this->created_at = "NOW()";
+	// Relationships and calculated properties for PHP 8.2+
+	public $book;
+	public $status;
+	public $c; // helper for count queries
+
+	public function __construct(){
+		$this->code = "";
+		$this->status_id = 1; // 1 = Disponible
+		$this->book_id = null;
 	}
 
-	public function getBook(){ return BookData::getById($this->book_id); }
-	public function getStatus(){ return StatusData::getById($this->status_id); }
+	public function getBook(){
+		return $this->book_id ? BookData::getById($this->book_id) : null;
+	}
+
+	public function getStatus(){
+		return $this->status_id ? StatusData::getById($this->status_id) : null;
+	}
 
 	public function add(){
-		$sql = "insert into item (code,status_id,book_id) ";
-		$sql .= "value (\"$this->code\",\"$this->status_id\",\"$this->book_id\")";
-		return Executor::doit($sql);
+		$sql = "insert into ".self::$tablename." (code, status_id, book_id) values (:code, :status_id, :book_id)";
+		return Executor::doit($sql, [
+			':code' => $this->code,
+			':status_id' => $this->status_id,
+			':book_id' => $this->book_id
+		]);
 	}
 
 	public static function delById($id){
-		$sql = "delete from ".self::$tablename." where id=$id";
-		Executor::doit($sql);
-	}
-	public function del(){
-		$sql = "delete from ".self::$tablename." where id=$this->id";
-		Executor::doit($sql);
+		$sql = "delete from ".self::$tablename." where id=:id";
+		return Executor::doit($sql, [':id' => $id]);
 	}
 
-// partiendo de que ya tenemos creado un objecto ItemData previamente utilizamos el contexto
 	public function update(){
-		$sql = "update ".self::$tablename." set code=\"$this->code\",status_id=\"$this->status_id\" where id=$this->id";
-		Executor::doit($sql);
+		$sql = "update ".self::$tablename." set code=:code, status_id=:status_id, book_id=:book_id where id=:id";
+		return Executor::doit($sql, [
+			':code' => $this->code,
+			':status_id' => $this->status_id,
+			':book_id' => $this->book_id,
+			':id' => $this->id
+		]);
 	}
 
-	public function avaiable(){
-		$sql = "update ".self::$tablename." set status_id=1 where id=$this->id";
-		Executor::doit($sql);
-	}
-
-	public function unavaiable(){
-		$sql = "update ".self::$tablename." set status_id=2 where id=$this->id";
-		Executor::doit($sql);
+	public function setStatus($status_id){
+		$sql = "update ".self::$tablename." set status_id=:status_id where id=:id";
+		return Executor::doit($sql, [
+			':status_id' => $status_id,
+			':id' => $this->id
+		]);
 	}
 
 	public static function getById($id){
-		$sql = "select * from ".self::$tablename." where id=$id";
-		$query = Executor::doit($sql);
-		return Model::one($query[0],new ItemData());
+		$sql = "select * from ".self::$tablename." where id=:id";
+		$query = Executor::doit($sql, [':id' => $id]);
+		return Model::one($query[0], new ItemData());
 	}
 
-	public static function countByBookId($id){
-		$sql = "select count(*) as c from ".self::$tablename." where book_id=$id";
-		$query = Executor::doit($sql);
-		return Model::one($query[0],new ItemData());
+	public static function getAllByBookId($book_id){
+		$sql = "select * from ".self::$tablename." where book_id=:bid order by code asc";
+		$query = Executor::doit($sql, [':bid' => $book_id]);
+		return Model::many($query[0], new ItemData());
 	}
 
-	public static function countAvaiableByBookId($id){
-		$sql = "select count(*) as c from ".self::$tablename." where book_id=$id and status_id=1";
+	public static function getAvailable(){
+		$sql = "select * from ".self::$tablename." where status_id=1 order by code asc";
 		$query = Executor::doit($sql);
-		return Model::one($query[0],new ItemData());
+		return Model::many($query[0], new ItemData());
 	}
 
-	public static function getAll(){
-		$sql = "select * from ".self::$tablename;
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new ItemData());
-	}
-	
-	public static function getAllByBookId($id){
-		$sql = "select * from ".self::$tablename." where book_id=$id";
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new ItemData());
+	public static function countByBookId($book_id){
+		$sql = "select count(*) as c from ".self::$tablename." where book_id=:bid";
+		$query = Executor::doit($sql, [':bid' => $book_id]);
+		$row = Model::one($query[0], new ItemData());
+		return $row ? (int)$row->c : 0;
 	}
 
-	public static function getAvaiableByBookId($id){
-		$sql = "select * from ".self::$tablename." where book_id=$id and status_id=1";
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new ItemData());
+	public static function countAvailableByBookId($book_id){
+		$sql = "select count(*) as c from ".self::$tablename." where book_id=:bid and status_id=1";
+		$query = Executor::doit($sql, [':bid' => $book_id]);
+		$row = Model::one($query[0], new ItemData());
+		return $row ? (int)$row->c : 0;
 	}
 
-	public static function getLike($q){
-		$sql = "select * from ".self::$tablename." where name like '%$q%'";
+	public static function countTotal(){
+		$sql = "select count(*) as c from ".self::$tablename;
 		$query = Executor::doit($sql);
-		return Model::many($query[0],new ItemData());
+		$row = Model::one($query[0], new ItemData());
+		return $row ? (int)$row->c : 0;
 	}
-
-
 }
-
-?>

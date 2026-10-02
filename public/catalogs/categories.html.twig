@@ -1,0 +1,73 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Categorías{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="h3 mb-0 text-gray-800">Categorías de Libros</h2>
+      <p class="text-muted mb-0">Clasificación temática y géneros literarios.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0 fw-bold"><i class="bi bi-tag me-2 text-primary"></i>Nueva Categoría</h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ base_url }}/categories/create">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Nombre del Género / Categoría</label>
+              <input type="text" name="name" class="form-control" placeholder="Ej. Novela Histórica, Ciencia Ficción" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-plus-lg me-1"></i> Guardar Categoría
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0 fw-bold"><i class="bi bi-list-check me-2 text-secondary"></i>Listado de Categorías</h5>
+        </div>
+        <div class="card-body">
+          {% if categories is empty %}
+            <p class="text-muted text-center py-4">No hay categorías registradas.</p>
+          {% else %}
+            <div class="table-responsive">
+              <table class="table table-sm table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre de la Categoría</th>
+                    <th class="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for c in categories %}
+                    <tr>
+                      <td>#{{ c.id }}</td>
+                      <td class="fw-bold">{{ c.name }}</td>
+                      <td class="text-end">
+                        <a href="{{ base_url }}/categories/delete/{{ c.id }}" class="btn btn-xs btn-danger" onclick="return confirm('¿Eliminar esta categoría?');" title="Eliminar">
+                          <i class="bi bi-trash"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

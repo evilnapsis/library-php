@@ -1,0 +1,95 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Préstamos de Libros{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="h3 mb-0 text-gray-800">Préstamos y Devoluciones</h2>
+      <p class="text-muted mb-0">Control de libros prestados, plazos de entrega y devoluciones.</p>
+    </div>
+    <a href="{{ base_url }}/loans/new" class="btn btn-primary">
+      <i class="bi bi-plus-circle me-1"></i> Registrar Préstamo
+    </a>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3">
+      <h5 class="card-title mb-0 fw-bold"><i class="bi bi-arrow-left-right me-2 text-primary"></i>Listado de Préstamos</h5>
+    </div>
+    <div class="card-body">
+      {% if loans is empty %}
+        <div class="text-center py-5 text-muted">
+          <i class="bi bi-journal-arrow-up fs-1 d-block mb-3"></i>
+          <h5>No hay préstamos registrados</h5>
+          <a href="{{ base_url }}/loans/new" class="btn btn-primary mt-2">Registrar Primer Préstamo</a>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Folio</th>
+                <th>Ejemplar / Libro</th>
+                <th>Lector / Socio</th>
+                <th>Fecha Salida</th>
+                <th>Fecha Límite</th>
+                <th>Estado</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for l in loans %}
+                <tr>
+                  <td>#{{ l.id }}</td>
+                  <td>
+                    {% if l.item %}
+                      <span class="badge bg-primary">{{ l.item.code }}</span>
+                      <strong class="d-block mt-1">{{ l.item.book ? l.item.book.title : '-' }}</strong>
+                    {% else %}
+                      <span class="text-muted">N/A</span>
+                    {% endif %}
+                  </td>
+                  <td class="fw-bold">
+                    {{ l.client ? (l.client.name ~ ' ' ~ l.client.lastname) : 'Lector #' ~ l.client_id }}
+                    <small class="text-muted d-block">{{ l.client ? l.client.email : '' }}</small>
+                  </td>
+                  <td>{{ l.start_at }}</td>
+                  <td>
+                    {{ l.finish_at }}
+                    {% if l.is_overdue %}
+                      <span class="badge bg-danger ms-1">Vencido</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if l.returned_at is null %}
+                      {% if l.is_overdue %}
+                        <span class="badge bg-danger">Atrasado</span>
+                      {% else %}
+                        <span class="badge bg-warning text-dark">Prestado</span>
+                      {% endif %}
+                    {% else %}
+                      <span class="badge bg-success">Devuelto ({{ l.returned_at|slice(0, 10) }})</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    {% if l.returned_at is null %}
+                      <a href="{{ base_url }}/loans/return/{{ l.id }}" class="btn btn-xs btn-success me-1" title="Registrar Devolución" onclick="return confirm('¿Confirmar devolución de este libro?');">
+                        <i class="bi bi-box-arrow-in-down"></i> Devolver
+                      </a>
+                    {% endif %}
+                    <a href="{{ base_url }}/loans/delete/{{ l.id }}" class="btn btn-xs btn-danger" onclick="return confirm('¿Eliminar este registro de préstamo?');" title="Eliminar">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

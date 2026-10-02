@@ -1,0 +1,75 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="h3 mb-0 text-gray-800">Usuarios del Sistema</h2>
+      <p class="text-muted mb-0">Control de operadores y administradores.</p>
+    </div>
+    <div>
+      <a href="{{ base_url }}/users/new" class="btn btn-primary">
+        <i class="bi bi-person-plus me-1"></i> Nuevo Usuario
+      </a>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      {% if users is empty %}
+        <p class="text-muted text-center py-4">No hay usuarios registrados.</p>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Rol</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for u in users %}
+                <tr>
+                  <td>#{{ u.id }}</td>
+                  <td class="fw-bold">{{ u.name }} {{ u.lastname }}</td>
+                  <td><span class="badge bg-light text-dark border">{{ u.username }}</span></td>
+                  <td>{{ u.email ?: '-' }}</td>
+                  <td>
+                    {% if u.status == 1 or u.is_active == 1 %}
+                      <span class="badge bg-success">Activo</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Inactivo</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if u.kind == 1 or u.is_admin == 1 %}
+                      <span class="badge bg-primary">Administrador</span>
+                    {% else %}
+                      <span class="badge bg-info text-dark">Operador</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    <a href="{{ base_url }}/users/edit/{{ u.id }}" class="btn btn-xs btn-warning me-1">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{{ base_url }}/users/delete/{{ u.id }}" class="btn btn-xs btn-danger" onclick="return confirm('¿Seguro que deseas eliminar este usuario?');">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

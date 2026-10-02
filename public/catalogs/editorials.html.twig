@@ -1,0 +1,73 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Editoriales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="h3 mb-0 text-gray-800">Editoriales</h2>
+      <p class="text-muted mb-0">Casas editoras y sellos de publicación.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0 fw-bold"><i class="bi bi-building me-2 text-primary"></i>Nueva Editorial</h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ base_url }}/editorials/create">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Nombre de la Editorial</label>
+              <input type="text" name="name" class="form-control" placeholder="Ej. Penguin Random House" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-plus-lg me-1"></i> Guardar Editorial
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0 fw-bold"><i class="bi bi-list-check me-2 text-secondary"></i>Listado de Editoriales</h5>
+        </div>
+        <div class="card-body">
+          {% if editorials is empty %}
+            <p class="text-muted text-center py-4">No hay editoriales registradas.</p>
+          {% else %}
+            <div class="table-responsive">
+              <table class="table table-sm table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre de la Editorial</th>
+                    <th class="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for e in editorials %}
+                    <tr>
+                      <td>#{{ e.id }}</td>
+                      <td class="fw-bold">{{ e.name }}</td>
+                      <td class="text-end">
+                        <a href="{{ base_url }}/editorials/delete/{{ e.id }}" class="btn btn-xs btn-danger" onclick="return confirm('¿Eliminar esta editorial?');" title="Eliminar">
+                          <i class="bi bi-trash"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

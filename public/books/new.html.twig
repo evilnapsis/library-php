@@ -1,0 +1,97 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Nuevo Libro{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="h3 mb-0 text-gray-800">Registrar Libro</h2>
+      <p class="text-muted mb-0">Agregar un nuevo título al catálogo bibliotecario.</p>
+    </div>
+    <a href="{{ base_url }}/books" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i> Volver al Catálogo
+    </a>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0 fw-bold"><i class="bi bi-book me-2 text-primary"></i>Datos Bibliográficos</h5>
+        </div>
+        <div class="card-body p-4">
+          <form method="POST" action="{{ base_url }}/books/create">
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label class="form-label fw-bold">ISBN</label>
+                <input type="text" name="isbn" class="form-control" placeholder="Ej. 978-3-16-148410-0">
+              </div>
+              <div class="col-md-8">
+                <label class="form-label fw-bold">Título del Libro</label>
+                <input type="text" name="title" class="form-control" placeholder="Título principal" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Subtítulo</label>
+              <input type="text" name="subtitle" class="form-control" placeholder="Subtítulo complementario (opcional)">
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label class="form-label fw-bold">Autor</label>
+                <select name="author_id" class="form-select">
+                  <option value="">-- Seleccionar Autor --</option>
+                  {% for a in authors %}
+                    <option value="{{ a.id }}">{{ a.name }} {{ a.lastname }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold">Editorial</label>
+                <select name="editorial_id" class="form-select">
+                  <option value="">-- Seleccionar Editorial --</option>
+                  {% for e in editorials %}
+                    <option value="{{ e.id }}">{{ e.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold">Categoría</label>
+                <select name="category_id" class="form-select">
+                  <option value="">-- Seleccionar Categoría --</option>
+                  {% for c in categories %}
+                    <option value="{{ c.id }}">{{ c.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Año de Publicación</label>
+                <input type="number" name="year" class="form-control" value="{{ "now"|date("Y") }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Número de Páginas</label>
+                <input type="number" name="n_pag" class="form-control" placeholder="0">
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold">Descripción / Sinopsis</label>
+              <textarea name="description" class="form-control" rows="3" placeholder="Resumen del contenido..."></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <a href="{{ base_url }}/books" class="btn btn-secondary">Cancelar</a>
+              <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Guardar Libro</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

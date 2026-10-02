@@ -1,0 +1,79 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Autores{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="h3 mb-0 text-gray-800">Autores</h2>
+      <p class="text-muted mb-0">Catálogo de autores de libros.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0 fw-bold"><i class="bi bi-pen me-2 text-primary"></i>Nuevo Autor</h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ base_url }}/authors/create">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Nombre(s)</label>
+              <input type="text" name="name" class="form-control" placeholder="Ej. Gabriel" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Apellidos</label>
+              <input type="text" name="lastname" class="form-control" placeholder="Ej. García Márquez" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-plus-lg me-1"></i> Guardar Autor
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0 fw-bold"><i class="bi bi-list-check me-2 text-secondary"></i>Listado de Autores</h5>
+        </div>
+        <div class="card-body">
+          {% if authors is empty %}
+            <p class="text-muted text-center py-4">No hay autores registrados.</p>
+          {% else %}
+            <div class="table-responsive">
+              <table class="table table-sm table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th class="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for a in authors %}
+                    <tr>
+                      <td>#{{ a.id }}</td>
+                      <td class="fw-bold">{{ a.name }}</td>
+                      <td>{{ a.lastname }}</td>
+                      <td class="text-end">
+                        <a href="{{ base_url }}/authors/delete/{{ a.id }}" class="btn btn-xs btn-danger" onclick="return confirm('¿Eliminar este autor?');" title="Eliminar">
+                          <i class="bi bi-trash"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Ejemplares - {{ b.title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="h3 mb-0 text-gray-800">Ejemplares Físicos: {{ b.title }}</h2>
+      <p class="text-muted mb-0">Gestión de copias e inventario de este título.</p>
+    </div>
+    <a href="{{ base_url }}/books" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i> Volver a Libros
+    </a>
+  </div>
+
+  <div class="row g-4">
+    <!-- Formulario para agregar ejemplar -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0 fw-bold"><i class="bi bi-plus-circle me-2 text-primary"></i>Nuevo Ejemplar</h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ base_url }}/books/{{ b.id }}/items/create">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Código de Ejemplar / Código de Barras</label>
+              <input type="text" name="code" class="form-control" placeholder="Ej. LIB-001-A" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Estado Inicial</label>
+              <select name="status_id" class="form-select">
+                {% for st in statuses %}
+                  <option value="{{ st.id }}">{{ st.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-plus-lg me-1"></i> Agregar Ejemplar
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Listado de ejemplares -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0 fw-bold"><i class="bi bi-journals me-2 text-secondary"></i>Copias en Inventario</h5>
+        </div>
+        <div class="card-body">
+          {% if b.items is empty %}
+            <div class="text-center py-4 text-muted">
+              <i class="bi bi-journal-x fs-2 d-block mb-2"></i>
+              No hay ejemplares físicos registrados para este libro todavía.
+            </div>
+          {% else %}
+            <div class="table-responsive">
+              <table class="table table-sm table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Código de Copia</th>
+                    <th>Estado Actual</th>
+                    <th>Cambiar Estado</th>
+                    <th class="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in b.items %}
+                    <tr>
+                      <td>#{{ item.id }}</td>
+                      <td class="fw-bold fs-6">{{ item.code }}</td>
+                      <td>
+                        {% if item.status_id == 1 %}
+                          <span class="badge bg-success">Disponible</span>
+                        {% elseif item.status_id == 2 %}
+                          <span class="badge bg-warning text-dark">Prestado</span>
+                        {% else %}
+                          <span class="badge bg-secondary">Inactivo / Baja</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <form method="POST" action="{{ base_url }}/books/items/status/{{ item.id }}" class="d-flex gap-1" style="max-width: 200px;">
+                          <input type="hidden" name="book_id" value="{{ b.id }}">
+                          <select name="status_id" class="form-select form-select-sm">
+                            {% for st in statuses %}
+                              <option value="{{ st.id }}" {% if item.status_id == st.id %}selected{% endif %}>{{ st.name }}</option>
+                            {% endfor %}
+                          </select>
+                          <button type="submit" class="btn btn-xs btn-outline-secondary" title="Actualizar">
+                            <i class="bi bi-check2"></i>
+                          </button>
+                        </form>
+                      </td>
+                      <td class="text-end">
+                        <a href="{{ base_url }}/books/items/delete/{{ item.id }}?book_id={{ b.id }}" class="btn btn-xs btn-danger" onclick="return confirm('¿Eliminar este ejemplar?');" title="Eliminar">
+                          <i class="bi bi-trash"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

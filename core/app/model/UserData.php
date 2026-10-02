@@ -1,66 +1,135 @@
 <?php
+/**
+ * Modelo de usuarios administradores y operadores del sistema.
+ */
 class UserData {
 	public static $tablename = "user";
+	public $id;
+	public $name;
+	public $lastname;
+	public $username;
+	public $email;
+	public $password;
+	public $image;
+	public $status;
+	public $kind;
+	public $created_at;
 
-	public $id, $name, $lastname, $email, $username, $password, $is_active, $is_admin, $created_at;
+	// Propiedades de compatibilidad en tiempo de ejecución
+	public $is_admin = 0;
+	public $is_active = 1;
 
 	public function __construct(){
 		$this->name = "";
 		$this->lastname = "";
 		$this->username = "";
+		$this->email = "";
+		$this->image = "";
 		$this->password = "";
-		$this->is_active = "0";
-		$this->created_at = "NOW()";
+		$this->status = 1;
+		$this->kind = 1;
+		$this->created_at = date("Y-m-d H:i:s");
 	}
 
+	private static function db(): \PDO {
+		return Database::getPdo();
+	}
+
+	/**
+	 * Inserta un nuevo usuario en la base de datos.
+	 */
 	public function add(){
-		$sql = "insert into ".self::$tablename." (name,lastname,username,password,is_active,is_admin,created_at) ";
-		$sql .= "value (\"$this->name\",\"$this->lastname\",\"$this->username\",\"$this->password\",$this->is_active,$this->is_admin,$this->created_at)";
-		Executor::doit($sql);
+		$stmt = self::db()->prepare(
+			"INSERT INTO " . self::$tablename . " (name, lastname, username, email, password, image, status, kind, created_at) " .
+			"VALUES (:name, :lastname, :username, :email, :password, :image, :status, :kind, NOW())"
+		);
+		$stmt->execute([
+			'name' => $this->name,
+			'lastname' => $this->lastname,
+			'username' => $this->username,
+			'email' => $this->email,
+			'password' => $this->password,
+			'image' => $this->image ?: '',
+			'status' => $this->status ?: 1,
+			'kind' => $this->kind ?: 1,
+		]);
+		$this->id = self::db()->lastInsertId();
 	}
 
+	/**
+	 * Elimina un usuario por su ID.
+	 */
 	public static function delById($id){
-		$sql = "delete from ".self::$tablename." where id=$id";
-		Executor::doit($sql);
+		$stmt = self::db()->prepare("DELETE FROM " . self::$tablename . " WHERE id = :id");
+		$stmt->execute(['id' => $id]);
 	}
+
 	public function del(){
-		$sql = "delete from ".self::$tablename." where id=$this->id";
-		Executor::doit($sql);
+		self::delById($this->id);
 	}
 
-// partiendo de que ya tenemos creado un objecto UserData previamente utilizamos el contexto
+	/**
+	 * Actualiza los datos de un usuario existente.
+	 */
 	public function update(){
-		$sql = "update ".self::$tablename." set name=\"$this->name\",lastname=\"$this->lastname\",username=\"$this->username\",password=\"$this->password\",is_active=$this->is_active,is_admin=$this->is_admin where id=$this->id";
-		Executor::doit($sql);
+		$stmt = self::db()->prepare(
+			"UPDATE " . self::$tablename . " SET name = :name, lastname = :lastname, username = :username, " .
+			"email = :email, status = :status, kind = :kind WHERE id = :id"
+		);
+		$stmt->execute([
+			'name' => $this->name,
+			'lastname' => $this->lastname,
+			'username' => $this->username,
+			'email' => $this->email,
+			'status' => $this->status ?: 1,
+			'kind' => $this->kind ?: 1,
+			'id' => $this->id,
+		]);
 	}
 
+	/**
+	 * Actualiza únicamente la contraseña encriptada del usuario.
+	 */
 	public function update_passwd(){
-		$sql = "update ".self::$tablename." set password=\"$this->password\" where id=$this->id";
-		Executor::doit($sql);
+		$stmt = self::db()->prepare("UPDATE " . self::$tablename . " SET password = :password WHERE id = :id");
+		$stmt->execute(['password' => $this->password, 'id' => $this->id]);
 	}
 
+	/**
+	 * Obtiene un usuario por ID.
+	 */
 	public static function getById($id){
-		$sql = "select * from ".self::$tablename." where id=$id";
-		$query = Executor::doit($sql);
-		return Model::one($query[0],new UserData());
+		$stmt = self::db()->prepare("SELECT * FROM " . self::$tablename . " WHERE id = :id");
+		$stmt->execute(['id' => $id]);
+		$stmt->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, self::class);
+		return $stmt->fetch() ?: null;
 	}
 
+	/**
+	 * Obtiene un usuario por username.
+	 */
+	public static function getByUsername($username){
+		$stmt = self::db()->prepare("SELECT * FROM " . self::$tablename . " WHERE username = :u");
+		$stmt->execute(['u' => $username]);
+		$stmt->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, self::class);
+		return $stmt->fetch() ?: null;
+	}
 
-
+	/**
+	 * Obtiene todos los usuarios.
+	 */
 	public static function getAll(){
-		$sql = "select * from ".self::$tablename." order by created_at desc";
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new UserData());
+		$stmt = self::db()->query("SELECT * FROM " . self::$tablename . " ORDER BY id ASC");
+		return $stmt->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, self::class);
 	}
 
-
+	/**
+	 * Búsqueda de usuarios por nombre o username.
+	 */
 	public static function getLike($q){
-		$sql = "select * from ".self::$tablename." where title like '%$q%' or content like '%$q%'";
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new UserData());
+		$stmt = self::db()->prepare("SELECT * FROM " . self::$tablename . " WHERE name LIKE :q OR username LIKE :q");
+		$stmt->execute(['q' => "%$q%"]);
+		return $stmt->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, self::class);
 	}
-
-
 }
-
 ?>

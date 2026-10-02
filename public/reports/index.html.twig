@@ -1,0 +1,173 @@
+{% extends "layouts/main.html.twig" %}
+
+{% block title %}Reportes de Préstamos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h3 class="fw-bold mb-0">Reporte de Préstamos y Circulación</h3>
+    <small class="text-muted">Estadísticas de préstamos bibliotecarios y devoluciones por periodo</small>
+  </div>
+  <div>
+    <a href="{{ base_url }}/reports/csv?start={{ start }}&finish={{ finish }}" class="btn btn-success btn-xs text-white shadow-sm">
+      <i class="bi bi-file-earmark-spreadsheet me-1"></i> Descargar Datos en CSV
+    </a>
+  </div>
+</div>
+
+<!-- Filtro por Rango de Fechas -->
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body">
+    <form method="get" action="{{ base_url }}/reports" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small fw-semibold">Fecha Inicial</label>
+        <input type="date" name="start" class="form-control form-control-sm" value="{{ start }}" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small fw-semibold">Fecha Final</label>
+        <input type="date" name="finish" class="form-control form-control-sm" value="{{ finish }}" required>
+      </div>
+      <div class="col-md-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary btn-xs fw-semibold px-3 flex-grow-1">
+          <i class="bi bi-filter me-1"></i> Filtrar Reporte
+        </button>
+        <a href="{{ base_url }}/reports/csv?start={{ start }}&finish={{ finish }}" class="btn btn-success btn-xs text-white fw-semibold px-3" title="Descargar CSV">
+          <i class="bi bi-download me-1"></i> CSV
+        </a>
+        <a href="{{ base_url }}/reports" class="btn btn-outline-secondary btn-xs">Limpiar</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Tarjetas de Resumen -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card text-white bg-primary shadow-sm border-0">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <div class="fs-4 fw-bold">{{ totalLoans }}</div>
+          <div class="text-white-50 small">Total Préstamos del Periodo</div>
+        </div>
+        <i class="bi bi-book fs-1 opacity-50"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="card text-white bg-success shadow-sm border-0">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <div class="fs-4 fw-bold">{{ devueltos }}</div>
+          <div class="text-white-50 small">Ejemplares Devueltos</div>
+        </div>
+        <i class="bi bi-check-circle fs-1 opacity-50"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="card text-white bg-info shadow-sm border-0">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <div class="fs-4 fw-bold">{{ prestados }}</div>
+          <div class="text-white-50 small">Préstamos Activos</div>
+        </div>
+        <i class="bi bi-hourglass-split fs-1 opacity-50"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="card text-white bg-danger shadow-sm border-0">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <div class="fs-4 fw-bold">{{ vencidos }}</div>
+          <div class="text-white-50 small">Préstamos Vencidos / Mora</div>
+        </div>
+        <i class="bi bi-exclamation-triangle fs-1 opacity-50"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla Detallada de Préstamos -->
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+    <h6 class="fw-bold mb-0 text-dark">
+      <i class="bi bi-table me-2 text-primary"></i>Detalle de Préstamos ({{ start }} al {{ finish }})
+    </h6>
+    <span class="badge bg-light text-dark border">{{ operations|length }} registros</span>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-sm table-striped table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Folio</th>
+            <th>Libro</th>
+            <th>Código Ejemplar</th>
+            <th>Lector / Socio</th>
+            <th>Salida</th>
+            <th>Fecha Límite</th>
+            <th>Devolución</th>
+            <th>Estado</th>
+            <th class="text-end">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set today = "now"|date("Y-m-d") %}
+          {% for op in operations %}
+            {% set it = op.getItem() %}
+            {% set bk = it ? it.getBook() : null %}
+            {% set cl = op.getClient() %}
+            <tr>
+              <td class="fw-bold text-muted">#{{ op.id }}</td>
+              <td class="fw-semibold">
+                {% if bk %}
+                  <span class="text-dark"><i class="bi bi-journal-bookmark me-1 text-primary"></i>{{ bk.title }}</span>
+                {% else %}
+                  <span class="text-muted">Libro no disponible</span>
+                {% endif %}
+              </td>
+              <td><span class="badge bg-light text-dark border">{{ it ? it.code : '-' }}</span></td>
+              <td>{{ cl ? cl.name ~ ' ' ~ cl.lastname : 'Lector General' }}</td>
+              <td><span class="small">{{ op.start_at }}</span></td>
+              <td><span class="small fw-semibold">{{ op.finish_at }}</span></td>
+              <td>
+                {% if op.returned_at %}
+                  <span class="small text-muted">{{ op.returned_at|date("Y-m-d H:i") }}</span>
+                {% else %}
+                  <span class="text-muted small">-</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if op.returned_at %}
+                  <span class="badge bg-success"><i class="bi bi-check-lg me-1"></i>Devuelto</span>
+                {% elseif op.finish_at < today %}
+                  <span class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>Vencido</span>
+                {% else %}
+                  <span class="badge bg-info text-dark"><i class="bi bi-clock me-1"></i>Prestado</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="btn-group" role="group">
+                  {% if not op.returned_at %}
+                    <a href="{{ base_url }}/loans/return/{{ op.id }}" class="btn btn-success btn-xs" onclick="return confirm('¿Registrar devolución de este ejemplar?');" title="Devolver libro">
+                      <i class="bi bi-arrow-return-left me-1"></i>Devolver
+                    </a>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="9" class="text-center text-muted py-4">No se encontraron préstamos en el rango de fechas seleccionado</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
